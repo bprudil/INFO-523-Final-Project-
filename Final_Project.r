@@ -1,16 +1,10 @@
-#library(dplyr)    
-#library(ggplot2)  
-library(MASS)
-library(klaR)
-library(e1071)
 library(caret)
 library(here)
 
 #Data taken from https://www.kaggle.com/datasets/uciml/adult-census-income?select=adult.csv
 adult_data <- read.csv(file = here('Data/adult.csv'))
-#adult_data <- read.csv(file = '/Users/bryanprudil/Documents/Grad School/Classes/INFO 523/Final Project /Data/adult.csv')
 
-#Removing column we don't want
+#Removing columns we don't want part of our model
 data <- adult_data[-c(3, 5, 8, 11, 12, 13)]
 
 #Replacing '?' with NA (help from https://stackoverflow.com/questions/28061122/how-do-i-remove-question-mark-from-a-data-set-in-r)
@@ -26,7 +20,7 @@ sum(is.na(data$workclass))
 sum(is.na(data$occupation))
 sum(is.na(data$native.country))
 
-#Not a huge loss overall, so we remove rows with NA
+#Not a huge loss to remove NAs overall, so we remove rows with NA
 data1 <- na.omit(data)     
 
 #Checking the data to see if there are any outliers or weird instances 
@@ -45,6 +39,7 @@ y = train$income
 #Create a model trained witht the train set
 model <- train(x,y,'nb',trControl=trainControl(method='cv',number=10))
 model
+confusionMatrix(model)
 
 #Check the efficiency of the model using the test set
 Predict <- predict(model,newdata = test) 
